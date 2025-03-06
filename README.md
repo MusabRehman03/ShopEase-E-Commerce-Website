@@ -1,6 +1,6 @@
-
-
 # **ShopEase - E-Commerce Website 🛍️**
+
+**Live Link:** https://musabrehman03.github.io/ShopEase-E-Commerce-Website/
 
 This is a simple **E-Commerce Web Application** built using **HTML, Tailwind CSS, and JavaScript**. It allows users to browse products, add them to the cart, and proceed to checkout.
 
@@ -31,7 +31,7 @@ This project fetches products from a **fake API** (`https://dummyjson.com/produc
 ## **💻 How to Run the Project Locally**
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/your-username/e-commerce-website.git
+   git clone https://github.com/MusabRehman03/e-commerce-website.git
    ```
 2. **Open the Project Folder**
    ```bash
