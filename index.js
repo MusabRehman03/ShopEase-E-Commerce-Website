@@ -3,6 +3,7 @@ let arr = [];
 //   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 //   0, 0, 0, 0,
 // ];
+let spanc=0
 let totalNumberOfProductsInCart=0
 let total = 0;
 let currentPage = 1;
@@ -27,6 +28,7 @@ async function fetchData() {
   // displayData(arr)
 }
 function displayData(array = arr) {
+  document.getElementById('span').classList.remove('hidden')
   div.innerHTML = "";
   div.innerHTML = array
     .map((element, index) => {
@@ -47,7 +49,10 @@ function displayData(array = arr) {
     button.addEventListener("click", () => {
     //   cartCountArray[button.getAttribute("index")]++;
     //   localStorage.setItem("cartCountArray", JSON.stringify(cartCountArray));
-
+      
+      let span= document.getElementById('span')
+      spanc++
+      span.innerText=spanc
       let c = 0;
       // console.log('loopstart')
       // console.log(Number( button.getAttribute("index"))+1)
@@ -110,6 +115,7 @@ function cart() {
   let pages = document.getElementById("pages");
   pages.classList.add("hidden");
   displayCartData(cartArray);
+  document.getElementById('span').classList.add('hidden')
 }
 fetchData();
 displayData();
@@ -213,32 +219,50 @@ function increment(n) {
 //     // document.getElementById("checkOutDiv").classList.add('hidden')
 // }
 
-// let checkOut=document.getElementById('checkOut')
-// checkOut.addEventListener('click',()=>{
-    function checkOut(){
-    let a=document.getElementById('co')
-    a.innerHTML='Check Out'
-    let checkOutForm=document.getElementById('checkOutForm')
-    checkOutForm.classList.remove('hidden')
-    }
-// })
-function confirmPayment(){
-let a=document.getElementById('co')
-a.innerHTML='Order Summary'
-let c = document.getElementById('orderSummary')
-c.innerHTML=''
+
+// function checkOut(){
+//     let a=document.getElementById('co')
+//     a.innerHTML='Check Out'
+//     let checkOutForm=document.getElementById('checkOutForm')
+//     checkOutForm.classList.remove('hidden')
+//     }
+
+// function confirmPayment(){
+// let a=document.getElementById('co')
+// a.innerHTML='Order Summary'
+// let c = document.getElementById('orderSummary')
+// c.innerHTML=''
 
 
-c.innerHTML=cartArray.map(element=>`<div class="flex justify-between"><h2 class="text-lg font-semibold">${element.title}</h2>
+// c.innerHTML=cartArray.map(element=>`<div class="flex justify-between"><h2 class="text-lg font-semibold">${element.title}</h2>
                 
-                <p class="text-green-500 font-bold">$${((element.price)*element.count).toFixed('2')}</p>
-                </div>
-    `).join('')
-    let t=document.getElementById('thank')
-    t.classList.remove('hidden')
-    // window.onclick=function(){
-    // let a = document.getElementById("checkOutForm")
-    // a.classList.add('hidden')
+//                 <p class="text-green-500 font-bold">$${(element.price)*element.count}</p>
+//                 </div>
+//     `).join('')
+//     let t=document.getElementById('thank')
+//     t.classList.remove('hidden')
+//     // window.onclick=function(){
+//     // let a = document.getElementById("checkOutForm")
+//     // a.classList.add('hidden')
 
-    // }
-}
+//     // }
+// // }
+// let td1=document.getElementById('td1')
+// let td2=document.getElementById('td2')
+// let td3=document.getElementById('td3')
+// let td4=document.getElementById('td4')
+// td1.innerHTML='cgvhbjkjgch'
+// let td5= document.createElement('td')
+// td5.innerHTML='fvgbhjnftdcfvghbhvhbjhjgvhbbk'
+// td1.appendChild(td5)
+// let td6= document.createElement('td')
+// td6.innerHTML='5678'
+// td2.appendChild(td6)
+
+// let td7= document.createElement('td')
+// td7.innerHTML='34567'
+// td3.appendChild(td7)
+
+// let td8= document.createElement('td')
+// td8.innerHTML='4567'
+// td4.appendChild(td8)
