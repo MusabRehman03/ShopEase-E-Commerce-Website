@@ -231,7 +231,7 @@ c.innerHTML=''
 
 c.innerHTML=cartArray.map(element=>`<div class="flex justify-between"><h2 class="text-lg font-semibold">${element.title}</h2>
                 
-                <p class="text-green-500 font-bold">$${(element.price)*element.count}</p>
+                <p class="text-green-500 font-bold">$${((element.price)*element.count).toFixed('2')}</p>
                 </div>
     `).join('')
     let t=document.getElementById('thank')
