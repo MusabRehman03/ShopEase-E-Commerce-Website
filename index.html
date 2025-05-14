@@ -1,85 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Commerce Home</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShopEase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 ">
+<body class="bg-gray-100">
 
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 onclick="fetchData()" class="text-2xl font-bold cursor-pointer">ShopEase</h1>
+      <div class="relative">
+        <span id="span" class="hidden bg-red-400 w-6 text-center absolute left-14 bottom-5 rounded-full p-1 text-white">0</span>
+        <button onclick="cart()" class="bg-[#E3D2C3] hover:bg-[#be926b] font-semibold px-4 py-2 rounded-md">Cart</button>
+      </div>
+    </div>
+  </nav>
 
-    <nav class="bg-white shadow-md p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 onclick="fetchData()" class="text-2xl cursor-pointer font-bold">ShopEase</h1>
-            <div class="relative">
-                <span id="span" class=" bg-red-400  w-6 text-center absolute left-14 bottom-5 rounded-full p-1">0</span>
-                <button onclick="cart()" class="bg-[#E3D2C3] hover:bg-[#be926b] font-semibold px-4 py-2 rounded-md">Cart</button>
-            </div>
+  <!-- Product & Cart Section -->
+  <section class="min-h-[81vh] container mx-auto mt-6 mb-4 p-4">
+    <div id="productsDiv" class="flex flex-wrap gap-4 justify-center"></div>
+
+    <!-- Pagination -->
+    <div id="pages" class="space-x-2 mt-8 flex justify-center">
+      <button onclick="prevUpdate()" id="prev" class="bg-[#443627] text-white font-semibold rounded-xl px-2.5 py-1.5">Prev</button>
+      <button id="current" class="border border-gray-600 px-2.5 py-1.5 rounded-xl">1</button>
+      <button onclick="nextUpdate()" id="next" class="bg-[#443627] text-white font-semibold rounded-xl px-2.5 py-1.5">Next</button>
+    </div>
+
+    <!-- Checkout Summary -->
+    <div id="total" class="hidden mt-4 flex justify-end space-x-3">
+ 
+      <span onclick="checkOut()" id="checkOut" class="cursor-pointer w-32 bg-[#be926b] hover:bg-[#a6764c] py-1.5 px-2.5 font-semibold rounded-xl  text-xl">Check Out</span>
+    </div>
+
+    <!-- Checkout Form Modal -->
+    <div id="checkOutForm" class="bg-gray-100 p-6 hidden inset-0 fixed bg-opacity-50 h-[100vh] items-center justify-center flex z-50">
+      <div class="w-[40rem] bg-white p-6 rounded-lg shadow-lg">
+        <h2 id="co" class="text-2xl font-semibold text-gray-700 mb-4">Confirm Order</h2>
+
+        <form id="userForm" onsubmit="event.preventDefault(); confirmPayment();">
+          <div class="mb-4">
+            <label class="block text-gray-600">Full Name</label>
+            <input type="text" class="w-full p-2 border rounded-md" placeholder="Enter your name" required />
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-600">Address</label>
+            <input type="text" class="w-full p-2 border rounded-md" placeholder="Enter your address" required />
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-600">Contact Number</label>
+            <input type="tel" class="w-full p-2 border rounded-md" placeholder="Enter your contact number" required />
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-600">Payment Method</label>
+            <select class="w-full p-2 border rounded-md">
+              <option>Credit/Debit Card</option>
+              <option>PayPal</option>
+              <option>Cash on Delivery</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full bg-[#be926b] hover:bg-[#a6764c] text-white p-2 rounded-md text-lg">Confirm Order</button>
+        </form>
+
+        <div id="thank" class="hidden mt-6">
+          <h1 class="text-3xl font-extrabold text-[#be926b] text-center">Thank You For Shopping!</h1>
+          <div id="orderSummary" class="mt-4 space-y-2"></div>
         </div>
-    </nav>
+      </div>
+    </div>
+  </section>
 
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white p-6 text-center">
+    <p>&copy; 2025 ShopEase. All rights reserved.</p>
+  </footer>
 
-    <section class=" min-h-[81vh] container mx-auto mt-6 mb-4 p-4  ">
-
-        <div id="productsDiv" class="flex flex-wrap gap-4  justify-center">
-
-            
-        </div>
-        <div id="pages" class="space-x-2 mt-8 flex justify-center">
-            <button onclick="prevUpdate()" id="prev" class="bg-[#443627] text-white font-semibold rounded-xl px-2.5 py-1.5">Prev</button>
-            <button id="current" class="border border-gray-600 px-2.5 py-1.5 rounded-xl">1</button>
-            <button onclick="nextUpdate()" id="next" class="bg-[#443627] text-white font-semibold rounded-xl px-2.5 py-1.5">next</button>
-        </div>
-
-        <div id="total" class=" hidden mt-4 flex justify-center space-x-3">
-            <span class="text-xl py-1.5 px-2.5 font-bold">Your Total Bill is: </span>
-            <span class="text-xl py-1.5 px-2.5" id="bill">0</span>
-            <span onclick="checkOut()" id="checkOut" class="cursor-pointer bg-[#be926b] hover:bg-[#a6764c] py-1.5 px-2.5 font-semibold rounded-xl w-40 text-xl ">Check Out</span>
-        </div>
-        <div id="checkOutForm" class="bg-gray-100 p-6  hidden inset-0 fixed bg-opacity-50  h-[100vh] items-center justify-center flex">
-            <div id="checkoutForm" class="w-[40rem] bg-white p-6 rounded-lg shadow-lg">
-                <h2 id="co" class="cursor-pointer text-2xl font-semibold text-gray-700 mb-4">Confirm Order</h2>
-                
-
-                <form id="orderSummary" >
-                    <div class="mb-4">
-                        <label class="block text-gray-600">Full Name</label>
-                        <input type="text" class="w-full p-2 border rounded-md" placeholder="Enter your name" required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-600">Address</label>
-                        <input type="text" class="w-full p-2 border rounded-md" placeholder="Enter your address" required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-600">Contact Number</label>
-                        <input type="tel" class="w-full p-2 border rounded-md" placeholder="Enter your contact number" required>
-                    </div>
-        
-                    <div class="mb-4">
-                        <label class="block text-gray-600">Payment Method</label>
-                        <select class="w-full p-2 border rounded-md">
-                            <option>Credit/Debit Card</option>
-                            <option>PayPal</option>
-                            <option>Cash on Delivery</option>
-                        </select>
-                    </div>
-                    
-                    <button onclick="confirmPayment()" type="submit" class="w-full bg-[#ad8f76] hover:bg-[#9b7a5e] text-white p-2 rounded-md text-lg">Confirm Order</button>
-                </form>
-                <div id="thank" class="hidden">
-                    <h1  class="text-3xl font-extrabold text-[#be926b] text-center mt-5 ">Thank You For Shopping!</h1>
-                </div>
-            </div>
-            
-        </div>
-        <div id="checkOutPage"></div>
-    </section>
-  
-
-    <footer class="bg-gray-800 text-white p-6 text-center">
-        <p>&copy; 2025 ShopEase. All rights reserved.</p>
-    </footer>
-    <script src="index.js"></script>
+  <!-- JavaScript -->
+  <script src="index.js"></script>
 </body>
 </html>

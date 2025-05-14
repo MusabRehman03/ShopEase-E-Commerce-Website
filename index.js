@@ -1,268 +1,175 @@
 let arr = [];
-// let cartCountArray = JSON.parse(localStorage.getItem("cartCountArray")) || [
-//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//   0, 0, 0, 0,
-// ];
-let spanc=0
-let totalNumberOfProductsInCart=0
-let total = 0;
-let currentPage = 1;
 let cartArray = JSON.parse(localStorage.getItem("cartArray")) || [];
-if (currentPage == 1) {
-  document.getElementById("prev").disabled = true;
-}
+let spanc = 0;
+let currentPage = 1;
 let limit = 8;
-let skip = (currentPage - 1) * limit;
+let skip = 0;
+let total = 0;
+
 let div = document.getElementById("productsDiv");
+
 async function fetchData() {
   document.getElementById("total").classList.add("hidden");
-  let raw = await fetch("https://dummyjson.com/product");
-  let data = await raw.json();
+  const raw = await fetch("https://dummyjson.com/products?limit=100");
+  const data = await raw.json();
   arr = data.products;
-//   console.log(arr);
-  let paginatedArray = arr.slice(skip, skip + limit);
-//   console.log(paginatedArray);
-  let pages = document.getElementById("pages");
-  pages.classList.remove("hidden");
-  displayData(paginatedArray);
-  // displayData(arr)
+  updatePagination();
+  displayData(arr.slice(skip, skip + limit));
 }
-function displayData(array = arr) {
-  document.getElementById('span').classList.remove('hidden')
-  div.innerHTML = "";
+
+function displayData(array) {
+  document.getElementById("span").classList.remove("hidden");
   div.innerHTML = array
-    .map((element, index) => {
-      return `<div  class=" productCard p-4 border rounded-lg shadow-md h-fit w-80 flex flex-col justify-center items-center">
-            <img src="${element.thumbnail}" alt="${element.title}" class="w-40 h-40 object-cover">
-            <h2 class="text-lg font-semibold">${element.title}</h2>
-            <p class="text-gray-600">Brand: ${element.brand}</p>
-            <p class="text-green-500 font-bold">$${element.price}</p>
-            
-            <button index=${index} class=" addToCart mt-2 px-4 py-2 hover:bg-blue-700 bg-blue-500 text-white rounded">Add to Cart</button>
-            
+    .map((item, index) => {
+      return `
+        <div class="productCard p-4 border rounded-lg shadow-md h-fit w-80 flex flex-col justify-center items-center bg-white">
+          <img src="${item.thumbnail}" alt="${item.title}" class="w-40 h-40 object-cover">
+          <h2 class="text-lg font-semibold">${item.title}</h2>
+          <p class="text-gray-600">Brand: ${item.brand}</p>
+          <p class="text-green-500 font-bold">$${item.price}</p>
+          <button index=${index} class="addToCart mt-2 px-4 py-2 bg-[#443627] text-white hover:bg-[#5b4736] rounded">Add to Cart</button>
         </div>`;
     })
     .join("");
-  updatePagination();
-  let buttons = div.querySelectorAll(".addToCart");
-  buttons.forEach((button) => {
+
+  document.querySelectorAll(".addToCart").forEach((button) => {
     button.addEventListener("click", () => {
-    //   cartCountArray[button.getAttribute("index")]++;
-    //   localStorage.setItem("cartCountArray", JSON.stringify(cartCountArray));
-      
-      let span= document.getElementById('span')
-      spanc++
-      span.innerText=spanc
-      let c = 0;
-      // console.log('loopstart')
-      // console.log(Number( button.getAttribute("index"))+1)
-      for (let i = 0; i < cartArray.length; i++) {
-        if (Number(button.getAttribute("index")) + 1 == cartArray[i].id) {
-            cartArray[i].count++
-          c++;
+      const idx = Number(button.getAttribute("index")) + skip;
+      const product = arr[idx];
+      const found = cartArray.find((p) => p.id === product.id);
+      spanc++;
+      document.getElementById("span").innerText = spanc;
 
-        }
+      if (found) {
+        found.count++;
+      } else {
+        cartArray.push({ ...product, count: 1 });
       }
-      // console.log('loopEnd')
-      if (c == 0) {
-        // console.log("if");
-        const temp = array[button.getAttribute("index")]
-        // console.log(temp)
-        temp.count=1
-        cartArray.push(array[button.getAttribute("index")]);
-        localStorage.setItem("cartArray", JSON.stringify(cartArray));
-      }
+      localStorage.setItem("cartArray", JSON.stringify(cartArray));
 
-      button.innerHTML = "Added to Cart";
+      button.innerHTML = "Added";
       button.className = "mt-2 px-4 py-2 bg-yellow-500 text-white rounded";
-      currentPage--;
       setTimeout(() => {
-        nextUpdate();
+        button.innerHTML = "Add to Cart";
+        button.className = "addToCart mt-2 px-4 py-2 bg-[#443627] text-white hover:bg-[#5b4736] rounded";
       }, 700);
     });
   });
 }
+
+function updatePagination() {
+  document.getElementById("prev").disabled = currentPage === 1;
+  document.getElementById("next").disabled = currentPage * limit >= arr.length;
+  document.getElementById("current").innerText = currentPage;
+}
+
 function nextUpdate() {
   currentPage++;
-
   skip = (currentPage - 1) * limit;
-  let paginatedArray = arr.slice(skip, skip + limit);
-  displayData(paginatedArray);
-  let current = document.getElementById("current");
-  current.innerText = currentPage;
+  updatePagination();
+  displayData(arr.slice(skip, skip + limit));
 }
+
 function prevUpdate() {
   currentPage--;
   skip = (currentPage - 1) * limit;
-  let paginatedArray = arr.slice(skip, skip + limit);
-  displayData(paginatedArray);
-  let current = document.getElementById("current");
-  current.innerText = currentPage;
+  updatePagination();
+  displayData(arr.slice(skip, skip + limit));
 }
-function updatePagination() {
-  if (currentPage * limit >= arr.length) {
-    document.getElementById("next").disabled = true;
-  } else {
-    document.getElementById("next").disabled = false;
-  }
-  if (currentPage === 1) {
-    document.getElementById("prev").disabled = true;
-  } else {
-    document.getElementById("prev").disabled = false;
-  }
-}
+
 function cart() {
-  let pages = document.getElementById("pages");
-  pages.classList.add("hidden");
-  displayCartData(cartArray);
-  document.getElementById('span').classList.add('hidden')
-}
-fetchData();
-displayData();
-function displayCartData(array = cartArray) {
-//   console.log(cartCountArray);
+  document.getElementById("pages").classList.add("hidden");
   document.getElementById("total").classList.remove("hidden");
-  div.innerHTML = "";
+  document.getElementById("span").classList.add("hidden");
+  showCart();
+}
+
+function showCart() {
   total = 0;
-  totalNumberOfProductsInCart=0
-  div.innerHTML = array
-    .map((element, index) => {
-      let n = Number(element.id) - 1;
-      total+=element.count*element.price
-        totalNumberOfProductsInCart+=element.count
-    //   total = total + cartCountArray[n] * arr[n].price;
-    //   console.log(cartCountArray[n]);
-    //   console.log(arr[n].price);
-      //   for(let i=0;i<30;i++){
-      //     total=total+(cartCountArray[i]*arr[n].price)
+  div.innerHTML = `
+    <div class="overflow-x-auto w-full">
+      <table class="min-w-full bg-white rounded-lg shadow">
+        <thead class="bg-[#443627] text-white">
+          <tr>
+            <th class="p-4 text-left">Image</th>
+            <th class="p-4 text-left">Product</th>
+            <th class="p-4 text-left">Price</th>
+            <th class="p-4 text-left">Quantity</th>
+            <th class="p-4 text-left">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${cartArray
+            .map((item, index) => {
+              const lineTotal = item.price * item.count;
+              total += lineTotal;
+              return `
+                <tr class="border-b">
+                  <td class="p-4"><img src="${item.thumbnail}" class="w-16 h-16 object-cover"></td>
+                  <td class="p-4">${item.title}</td>
+                  <td class="p-4">$${item.price}</td>
+                  <td class="p-4 flex items-center gap-2">
+                    <button onclick="decrement(${index})" class="bg-[#443627] text-white px-2 rounded">-</button>
+                    ${item.count}
+                    <button onclick="increment(${index})" class="bg-[#443627] text-white px-2 rounded">+</button>
+                  </td>
+                  <td class="p-4 font-semibold">$${lineTotal.toFixed(2)}</td>
+                </tr>`;
+            })
+            .join("")}
+        </tbody>
+      </table>
+    </div>
 
-      //   }
-      //   console.log(total)
-      // console.log(element.price)
-      element.index=index
-      // console.log(element)
-      return `<div  class=" productCard p-4 border rounded-lg shadow-md h-fit w-80 flex flex-col justify-center items-center">
-              <img src="${element.thumbnail}" alt="${element.title}" class="w-40 h-40 object-cover">
-              <h2 class="text-lg font-semibold">${element.title}</h2>
-              <p class="text-gray-600">Brand: ${element.brand}</p>
-              <p class="text-green-500 font-bold">$${element.price}</p>
-                <div class="flex space-x-1">
-              <button  index=${index} onclick="decrement(${element.index})" class=" plus  mt-2 px-4 py-2 hover:bg-red-500 bg-red-400 text-white rounded">-</button>
-              <span class="mt-2 px-4 py-2" id="count">${element.count}</span>
-            <button index=${index} onclick="increment(${element.index})" class=" minus mt-2 px-4 py-2 hover:bg-blue-500 bg-blue-400 text-white rounded">+</button>
+    <div class="mt-6 w-full flex justify-end">
+      <div class="w-96 p-4 bg-white shadow rounded space-y-2">
+        <div class="flex text-xl justify-between"><span>Subtotal:</span><span>$${total.toFixed(2)}</span></div>
+        <div class="flex text-xl justify-between"><span>Discount:</span><span>$${(total/10).toFixed(2)}</span></div>
+        <div class="flex text-xl justify-between font-bold"><span>Total:</span><span>$${(total.toFixed(2)-(total/10).toFixed(2))}</span></div>
+      </div>
+    </div>
+  `;
+  document.getElementById("bill").innerText = total.toFixed(2);
+  document.getElementById("checkOut").innerText = `Check Out (${cartArray.reduce((a, b) => a + b.count, 0)});`
+}
 
-            </div>
-          </div>`;
-    })
+function increment(index) {
+  cartArray[index].count++;
+  localStorage.setItem("cartArray", JSON.stringify(cartArray));
+  showCart();
+}
+
+function decrement(index) {
+  cartArray[index].count--;
+  if (cartArray[index].count <= 0) {
+    cartArray.splice(index, 1);
+  }
+  localStorage.setItem("cartArray", JSON.stringify(cartArray));
+  showCart();
+}
+
+function checkOut() {
+  document.getElementById("checkOutForm").classList.remove("hidden");
+}
+
+function confirmPayment() {
+  const form = document.getElementById("userForm");
+  form.classList.add("hidden");
+  document.getElementById("co").innerText = "Order Summary";
+
+  const summary = document.getElementById("orderSummary");
+  summary.innerHTML = cartArray
+    .map(
+      (item) =>
+        `<div class="flex justify-between border-b py-2">
+          <span>${item.title} x${item.count}</span>
+          <span>$${(item.price * item.count).toFixed(2)}</span>
+        </div>`
+    )
     .join("");
 
-  document.getElementById("bill").innerText = total.toFixed("2");
-  document.getElementById('checkOut').innerText = `Check Out(${totalNumberOfProductsInCart})`
+  document.getElementById("thank").classList.remove("hidden");
+  localStorage.removeItem("cartArray");
 }
-// let counter=document.getElementById("count")
-//       let count=0;
-function decrement(n) {
-  if(cartArray[n].count>1){
-    cartArray[n].count--
-  }else if(cartArray[n].count==1){
-    cartArray.splice(n,1)
-  }
-   
-    // console.log('jdhdjsks')
-  // console.log(index)
-//   if (cartCountArray[n] > 1) {
-//     cartCountArray[n]--;
-//     console.log(n)
-//     localStorage.setItem("cartCountArray", JSON.stringify(cartCountArray));
 
-    // let p=arr[n+1].price
-    // console.log(total)
-    // total-=p
-    // console.log(total)
-    // console.log(arr[n+1].price)
-    // displayCartData();
-//   } else if (cartCountArray[n] == 1) {
-    // console.log(n + 1);
-    // console.log(n)
-
-    // cartCountArray[n]--;
-    // localStorage.setItem("cartCountArray", JSON.stringify(cartCountArray));
-
-    // cartArray.splice(n+1,1)
-    // cartArray.forEach((elem,index) => {
-    //   if (elem.id === n+1 ) {
-    //     // let index=getAttribute('index')
-    //     console.log(elem)
-    //     cartArray.splice(index, 1);
-    //     localStorage.setItem("cartArray", JSON.stringify(cartArray));
-    //   }
-    // });
-
-    displayCartData();
-//   }
-
-  // console.log(cartCountArray[n])
-}
-function increment(n) {
-    cartArray[n].count++
-//   cartCountArray[n]++;
-//   localStorage.setItem("cartCountArray", JSON.stringify(cartCountArray));
-
-  // total+=arr[n+1].price
-  // console.log(arr[n+1].price)
-  displayCartData();
-}
-// function checkOut(){
-//     // document.getElementById("checkOutDiv").classList.remove('hidden')
-// }
-// function confirmPayment(){
-//     // document.getElementById("checkOutDiv").classList.add('hidden')
-// }
-
-
-// function checkOut(){
-//     let a=document.getElementById('co')
-//     a.innerHTML='Check Out'
-//     let checkOutForm=document.getElementById('checkOutForm')
-//     checkOutForm.classList.remove('hidden')
-//     }
-
-// function confirmPayment(){
-// let a=document.getElementById('co')
-// a.innerHTML='Order Summary'
-// let c = document.getElementById('orderSummary')
-// c.innerHTML=''
-
-
-// c.innerHTML=cartArray.map(element=>`<div class="flex justify-between"><h2 class="text-lg font-semibold">${element.title}</h2>
-                
-//                 <p class="text-green-500 font-bold">$${(element.price)*element.count}</p>
-//                 </div>
-//     `).join('')
-//     let t=document.getElementById('thank')
-//     t.classList.remove('hidden')
-//     // window.onclick=function(){
-//     // let a = document.getElementById("checkOutForm")
-//     // a.classList.add('hidden')
-
-//     // }
-// // }
-// let td1=document.getElementById('td1')
-// let td2=document.getElementById('td2')
-// let td3=document.getElementById('td3')
-// let td4=document.getElementById('td4')
-// td1.innerHTML='cgvhbjkjgch'
-// let td5= document.createElement('td')
-// td5.innerHTML='fvgbhjnftdcfvghbhvhbjhjgvhbbk'
-// td1.appendChild(td5)
-// let td6= document.createElement('td')
-// td6.innerHTML='5678'
-// td2.appendChild(td6)
-
-// let td7= document.createElement('td')
-// td7.innerHTML='34567'
-// td3.appendChild(td7)
-
-// let td8= document.createElement('td')
-// td8.innerHTML='4567'
-// td4.appendChild(td8)
+fetchData();
