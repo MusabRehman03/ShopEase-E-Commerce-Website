@@ -125,7 +125,7 @@ function showCart() {
       <div class="w-96 p-4 bg-white shadow rounded space-y-2">
         <div class="flex text-xl justify-between"><span>Subtotal:</span><span>$${total.toFixed(2)}</span></div>
         <div class="flex text-xl justify-between"><span>Discount:</span><span>$${(total/10).toFixed(2)}</span></div>
-        <div class="flex text-xl justify-between font-bold"><span>Total:</span><span>$${(total.toFixed(2)-(total/10).toFixed(2))}</span></div>
+        <div class="flex text-xl justify-between font-bold"><span>Total:</span><span>$${(total-(total/10)).toFixed(2)}</span></div>
       </div>
     </div>
   `;
