@@ -1,6 +1,11 @@
 let arr = [];
 let cartArray = JSON.parse(localStorage.getItem("cartArray")) || [];
 let spanc = 0;
+for(let i = 0; i < cartArray.length; i++) {
+  spanc += Number(cartArray[i].count);
+}
+document.getElementById("span").innerText = spanc;
+
 let currentPage = 1;
 let limit = 8;
 let skip = 0;
